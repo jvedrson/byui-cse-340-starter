@@ -1,0 +1,265 @@
+/* hero section */
+.hero {
+  color: var(--primary-color);
+  padding: 30px 15px;
+  margin: -15px -15px 30px -15px;
+  border-radius: 0 0 10px 10px;
+}
+
+.hero h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* container for image and card */
+.hero-image {
+  position: relative;
+  text-align: center;
+}
+
+.hero-image img {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+/* card overlay on image */
+.hero-card {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: rgba(255, 255, 255, 0.75);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  max-width: 260px;
+}
+
+.hero-card h2 {
+  color: #4c96d7;
+  font-size: 22px;
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.hero-card-text {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 5px;
+  color: var(--support-color);
+  font-weight: 600;
+}
+
+.btn-own-today {
+  display: inline-block;
+}
+
+.btn-own-today:hover {
+  opacity: 0.9;
+}
+
+.btn-own-today img {
+  width: 120px;
+  display: block;
+}
+
+/* upgrades and reviews */
+.upgrades-reviews {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviews {
+  order: 1;
+}
+
+.upgrades {
+  order: 2;
+}
+
+.upgrades,
+.reviews {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.upgrades h2,
+.reviews h2 {
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--accent-color);
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+/* upgrades grid */
+.upgrades-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.upgrade-item {
+  background-color: var(--bg-light);
+  border: 3px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+}
+
+.upgrade-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-color);
+}
+
+.upgrade-item a {
+  color: var(--support-color);
+  text-decoration: none;
+  display: block;
+}
+
+.upgrade-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  border-radius: 5px;
+}
+
+.upgrade-item h3 {
+  color: var(--primary-color);
+  font-size: 16px;
+  margin: 0;
+}
+
+/* reviews list */
+.reviews ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reviews ul li {
+  background-color: var(--bg-light);
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 5px;
+  font-style: italic;
+  color: var(--support-color);
+}
+
+.reviews ul li:last-child {
+  margin-bottom: 0;
+}
+
+/* mobile layout */
+@media screen and (max-width: 470px) {
+  .hero-card {
+    padding: 5px;
+    width: auto;
+  }
+
+  .hero-card-text {
+    line-height: 1.1;
+    margin: 2px;
+  }
+}
+
+/* tablet layout */
+@media screen and (min-width: 768px) {
+  .hero h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+
+  .hero-image {
+    position: relative;
+    max-width: 100%;
+  }
+
+  .hero-card {
+    left: 40px;
+    max-width: 320px;
+    padding: 25px;
+  }
+
+  .hero-card h2 {
+    font-size: 28px;
+  }
+
+  .hero-card-text {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .btn-own-today img {
+    width: 150px;
+  }
+
+  .upgrades-reviews {
+    flex-direction: row;
+    gap: 30px;
+  }
+
+  .upgrades {
+    order: 1;
+  }
+
+  .reviews {
+    order: 2;
+  }
+
+  .upgrades,
+  .reviews {
+    flex: 1;
+    padding: 30px;
+    margin-bottom: 0;
+  }
+
+  .upgrades-grid {
+    gap: 20px;
+  }
+
+  .upgrade-item img {
+    height: 150px;
+  }
+}
+
+/* desktop layout */
+@media screen and (min-width: 1024px) {
+  .hero {
+    padding: 60px 40px;
+  }
+
+  .hero h1 {
+    font-size: 48px;
+  }
+
+  .hero-card {
+    left: 50px;
+    max-width: 350px;
+    padding: 30px;
+  }
+
+  .hero-card h2 {
+    font-size: 32px;
+  }
+
+  .hero-card-text {
+    font-size: 20px;
+  }
+
+  .btn-own-today img {
+    width: 180px;
+  }
+
+  .upgrade-item img {
+    height: 180px;
+  }
+}

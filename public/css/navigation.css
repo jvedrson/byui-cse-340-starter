@@ -1,0 +1,48 @@
+nav {
+  background-color: var(--support-color);
+  padding: 0;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+nav li {
+  flex: 1;
+  text-align: center;
+}
+
+nav a {
+  display: block;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+nav a:hover {
+  background-color: var(--accent-color);
+  color: white;
+  text-decoration: none;
+}
+
+/* tablet layout */
+@media screen and (min-width: 768px) {
+  nav a {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+}
+
+/* desktop layout */
+@media screen and (min-width: 1024px) {
+  nav a {
+    padding: 18px 20px;
+  }
+}

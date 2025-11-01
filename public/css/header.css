@@ -1,0 +1,37 @@
+#top-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.siteName {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.siteName a {
+  color: white;
+  text-decoration: none;
+}
+
+.siteName a:hover {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+#tools a {
+  background-color: white;
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 5px;
+}
+
+#tools a:hover {
+  color: var(--accent-color);
+  text-decoration: none;
+}
