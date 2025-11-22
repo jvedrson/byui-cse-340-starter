@@ -19,5 +19,28 @@ invCont.buildByClassificationId = async function (req, res, next) {
   })
 }
 
+/* ***************************
+ *  Build inventory by inv_id view
+ * ************************** */
+invCont.buildByInvId = async function (req, res, next) {
+  const inv_id = req.params.invId
+  const data = await invModel.getInventoryByInvId(inv_id)
+  const detailHTML = await utilities.buildDetailHTML(data)
+  let nav = await utilities.getNav()
+  const title = data ? data.inv_make + " " + data.inv_model : "Vehicle Not Found"
+  res.render("./inventory/detail", {
+    title: title,
+    nav,
+    detailHTML,
+  })
+}
+
+/* ***************************
+ *  Trigger intentional error
+ * ************************** */
+invCont.triggerError = async function (req, res, next) {
+  throw new Error("Intentional 500 error for testing purposes")
+}
+
 module.exports = invCont
 
