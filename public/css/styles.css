@@ -166,6 +166,17 @@ a:hover {
   border-color: var(--primary-color);
 }
 
+/* Form validation styles */
+input:required:invalid, input:focus:invalid {
+  border-color: #dc3545;
+  border-width: 2px;
+}
+
+input:required:valid {
+  border-color: #28a745;
+  border-width: 2px;
+}
+
 .btn-submit {
   width: 100%;
   padding: 12px;

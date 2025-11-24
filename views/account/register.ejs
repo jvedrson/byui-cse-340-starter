@@ -8,6 +8,15 @@
 <%# Message Block %>
 <%- messages() %>
 
+<%# Error Display %>
+<% if (errors) { %>
+  <ul class="notice">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
 <%# Registration Form %>
 <div class="login-container">
   <form action="/account/register" method="post" class="login-form" id="registerForm">
@@ -17,6 +26,7 @@
         type="text" 
         id="account_firstname" 
         name="account_firstname"
+        value="<%= typeof account_firstname !== 'undefined' ? account_firstname : '' %>"
         required
       />
     </div>
@@ -27,6 +37,7 @@
         type="text" 
         id="account_lastname" 
         name="account_lastname"
+        value="<%= typeof account_lastname !== 'undefined' ? account_lastname : '' %>"
         required
       />
     </div>
@@ -36,7 +47,8 @@
       <input 
         type="email" 
         id="account_email" 
-        name="account_email" 
+        name="account_email"
+        value="<%= typeof account_email !== 'undefined' ? account_email : '' %>"
         required
       />
     </div>
@@ -49,20 +61,14 @@
           id="account_password" 
           name="account_password" 
           required
-          minlength="12"
+          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
         />
         <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password">
           <span class="toggle-icon">&#128529;</span>
         </button>
       </div>
       <div class="password-requirements">
-        <p class="requirements-title">Password must:</p>
-        <ul class="requirements-list">
-          <li>Be at least 12 characters long</li>
-          <li>Contain at least 1 capital letter</li>
-          <li>Contain at least 1 number</li>
-          <li>Contain at least 1 special character</li>
-        </ul>
+        <p class="requirements-title">Passwords must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character</p>
       </div>
     </div>
     
