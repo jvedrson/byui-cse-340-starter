@@ -1,0 +1,100 @@
+<%# Content Heading %>
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%# Message Block %>
+<%- messages() %>
+
+<%# Registration Form %>
+<div class="login-container">
+  <form action="/account/register" method="post" class="login-form" id="registerForm">
+    <div class="form-group">
+      <label for="account_firstname">First Name</label>
+      <input 
+        type="text" 
+        id="account_firstname" 
+        name="account_firstname"
+        required
+      />
+    </div>
+    
+    <div class="form-group">
+      <label for="account_lastname">Last Name</label>
+      <input 
+        type="text" 
+        id="account_lastname" 
+        name="account_lastname"
+        required
+      />
+    </div>
+    
+    <div class="form-group">
+      <label for="account_email">Email</label>
+      <input 
+        type="email" 
+        id="account_email" 
+        name="account_email" 
+        required
+      />
+    </div>
+    
+    <div class="form-group">
+      <label for="account_password">Password</label>
+      <div class="password-container">
+        <input 
+          type="password" 
+          id="account_password" 
+          name="account_password" 
+          required
+          minlength="12"
+        />
+        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password">
+          <span class="toggle-icon">&#128529;</span>
+        </button>
+      </div>
+      <div class="password-requirements">
+        <p class="requirements-title">Password must:</p>
+        <ul class="requirements-list">
+          <li>Be at least 12 characters long</li>
+          <li>Contain at least 1 capital letter</li>
+          <li>Contain at least 1 number</li>
+          <li>Contain at least 1 special character</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <button type="submit" class="btn-submit">REGISTER</button>
+    </div>
+  </form>
+  
+  <div class="register-link">
+    <p>Have an account? <a href="/account/login" title="Return to login page">Login here</a>.</p>
+  </div>
+</div>
+
+<script>
+  // Password toggle functionality
+  const passwordToggle = document.getElementById('passwordToggle');
+  const passwordInput = document.getElementById('account_password');
+  
+  if (passwordToggle && passwordInput) {
+    passwordToggle.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      
+      const toggleIcon = this.querySelector('.toggle-icon');
+      if (type === 'password') {
+        toggleIcon.innerHTML = '&#128529;';
+        this.setAttribute('aria-label', 'Show password');
+      } else {
+        toggleIcon.innerHTML = '&#128528;';
+        this.setAttribute('aria-label', 'Hide password');
+      }
+    });
+  }
+</script>
+

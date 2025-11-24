@@ -21,6 +21,7 @@ if (process.env.NODE_ENV == "development") {
   // Added for troubleshooting queries
   // during development
   module.exports = {
+    pool,
     async query(text, params) {
       try {
         const res = await pool.query(text, params)
