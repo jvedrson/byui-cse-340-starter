@@ -153,7 +153,9 @@ a:hover {
   color: var(--primary-color);
 }
 
-.form-group input {
+.form-group input,
+.form-group select,
+.form-group textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
@@ -161,18 +163,44 @@ a:hover {
   font-size: 16px;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: var(--primary-color);
 }
 
+.form-group select {
+  background-color: white;
+  cursor: pointer;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-help {
+  margin-top: 5px;
+  font-size: 14px;
+  color: var(--support-color);
+  font-style: italic;
+}
+
 /* Form validation styles */
-input:required:invalid, input:focus:invalid {
+input:required:invalid, 
+input:focus:invalid,
+select:required:invalid,
+select:focus:invalid,
+textarea:required:invalid,
+textarea:focus:invalid {
   border-color: #dc3545;
   border-width: 2px;
 }
 
-input:required:valid {
+input:required:valid,
+select:required:valid,
+textarea:required:valid {
   border-color: #28a745;
   border-width: 2px;
 }
