@@ -95,10 +95,10 @@ Util.buildDetailHTML = async function(data){
 /* **************************************
 * Build the classification select list
 * ************************************ */
-Util.buildClassificationList = async function (classification_id = null) {
+Util.buildClassificationList = async function (classification_id = null, selectId = "classification_id") {
   try {
     let data = await invModel.getClassifications()
-    let classificationList = '<select name="classification_id" id="classification_id" required>'
+    let classificationList = `<select name="classification_id" id="${selectId}" required>`
     classificationList += "<option value=''>Choose a Classification</option>"
     if (data && data.rows) {
       data.rows.forEach((row) => {
@@ -116,7 +116,7 @@ Util.buildClassificationList = async function (classification_id = null) {
     return classificationList
   } catch (error) {
     console.error("Error building classification list:", error)
-    return '<select name="classification_id" id="classification_id" required><option value="">Choose a Classification</option></select>'
+    return `<select name="classification_id" id="${selectId}" required><option value="">Choose a Classification</option></select>`
   }
 }
 
