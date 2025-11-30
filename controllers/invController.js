@@ -72,6 +72,7 @@ invCont.addClassification = async function (req, res, next) {
   if (regResult.rows) {
     // Rebuild navigation to include new classification
     nav = await utilities.getNav()
+    const classificationList = await utilities.buildClassificationList(null, "classificationList");
     req.flash(
       "notice",
       `The ${classification_name} classification was successfully added.`
@@ -79,6 +80,7 @@ invCont.addClassification = async function (req, res, next) {
     res.status(201).render("./inventory/management", {
       title: "Inventory Management",
       nav,
+      classificationList,
     })
   } else {
     req.flash("notice", "Sorry, the classification addition failed.")
@@ -136,6 +138,7 @@ invCont.addInventory = async function (req, res, next) {
   )
   
   if (regResult.rows) {
+    const classificationList = await utilities.buildClassificationList(null, "classificationList");
     req.flash(
       "notice",
       `The ${inv_make} ${inv_model} was successfully added.`
@@ -143,6 +146,7 @@ invCont.addInventory = async function (req, res, next) {
     res.status(201).render("./inventory/management", {
       title: "Inventory Management",
       nav,
+      classificationList,
     })
   } else {
     const classificationList = await utilities.buildClassificationList(classification_id)
