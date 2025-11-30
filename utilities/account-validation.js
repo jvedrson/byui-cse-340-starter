@@ -114,5 +114,121 @@ validate.checkLoginData = async (req, res, next) => {
   next()
 }
 
+/*  **********************************
+  *  Account Update Data Validation Rules
+  * ********************************* */
+validate.accountUpdateRules = () => {
+  return [
+    // firstname is required and must be string
+    body("account_firstname")
+      .trim()
+      .escape()
+      .notEmpty()
+      .isLength({ min: 1 })
+      .withMessage("Please provide a first name."),
+
+    // lastname is required and must be string
+    body("account_lastname")
+      .trim()
+      .escape()
+      .notEmpty()
+      .isLength({ min: 2 })
+      .withMessage("Please provide a last name."),
+
+    // valid email is required
+    body("account_email")
+      .trim()
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("A valid email is required."),
+  ]
+}
+
+/* ******************************
+ * Check account update data and return errors or continue
+ * ***************************** */
+validate.checkAccountUpdateData = async (req, res, next) => {
+  const { account_firstname, account_lastname, account_email, account_id } = req.body
+  const validationErrors = validationResult(req)
+  let errors = []
+  
+  // Add validation errors to errors array
+  if (!validationErrors.isEmpty()) {
+    errors = validationErrors.array()
+  }
+  
+  // Check if email already exists for a different account
+  if (account_email && account_id) {
+    const accountModel = require("../models/account-model")
+    const emailExistsForOther = await accountModel.checkExistingEmailForOtherAccount(account_email, account_id)
+    if (emailExistsForOther > 0) {
+      errors.push({ msg: "Email exists. Please use a different email." })
+    }
+  }
+  
+  if (errors.length > 0) {
+    let nav = await utilities.getNav(req, res)
+    res.locals.account_firstname = account_firstname
+    res.locals.account_lastname = account_lastname
+    res.locals.account_email = account_email
+    
+    const accountModel = require("../models/account-model")
+    const accountData = await accountModel.getAccountById(account_id)
+    
+    res.render("account/update", {
+      errors: { array: () => errors },
+      title: "Update Account",
+      nav,
+      accountData,
+    })
+    return
+  }
+  next()
+}
+
+/*  **********************************
+  *  Password Update Validation Rules
+  * ********************************* */
+validate.passwordUpdateRules = () => {
+  return [
+    // password is required and must be strong password
+    body("account_password")
+      .trim()
+      .notEmpty()
+      .isStrongPassword({
+        minLength: 12,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+      })
+      .withMessage("Password does not meet requirements."),
+  ]
+}
+
+/* ******************************
+ * Check password update data and return errors or continue
+ * ***************************** */
+validate.checkPasswordUpdateData = async (req, res, next) => {
+  const { account_id } = req.body
+  let errors = []
+  errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    let nav = await utilities.getNav(req, res)
+    
+    const accountModel = require("../models/account-model")
+    const accountData = await accountModel.getAccountById(account_id)
+    
+    res.render("account/update", {
+      errors,
+      title: "Update Account",
+      nav,
+      accountData,
+    })
+    return
+  }
+  next()
+}
+
 module.exports = validate
 

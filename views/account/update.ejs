@@ -1,0 +1,119 @@
+<%# Content Heading %>
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%# Message Block %>
+<%- messages() %>
+
+<%# Error Display %>
+<% if (errors) { %>
+  <ul class="notice">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<%# Account Update Form %>
+<div class="login-container">
+  <form action="/account/update" method="post" class="login-form" id="accountUpdateForm">
+    <h2>Account Update</h2>
+    
+    <div class="form-group">
+      <label for="account_firstname">First Name</label>
+      <input 
+        type="text" 
+        id="account_firstname" 
+        name="account_firstname"
+        value="<%= locals.account_firstname || (accountData && accountData.account_firstname) || '' %>"
+        required
+      />
+    </div>
+    
+    <div class="form-group">
+      <label for="account_lastname">Last Name</label>
+      <input 
+        type="text" 
+        id="account_lastname" 
+        name="account_lastname"
+        value="<%= locals.account_lastname || (accountData && accountData.account_lastname) || '' %>"
+        required
+      />
+    </div>
+    
+    <div class="form-group">
+      <label for="account_email">Email</label>
+      <input 
+        type="email" 
+        id="account_email" 
+        name="account_email"
+        value="<%= locals.account_email || (accountData && accountData.account_email) || '' %>"
+        required
+      />
+    </div>
+    
+    <input type="hidden" name="account_id" value="<%= accountData.account_id %>" />
+    
+    <div class="form-group">
+      <button type="submit" class="btn-submit">Update Account</button>
+    </div>
+  </form>
+</div>
+
+<%# Change Password Form %>
+<div class="login-container">
+  <form action="/account/update-password" method="post" class="login-form" id="passwordChangeForm">
+    <h2>Change Password</h2>
+    
+    <div class="form-group">
+      <label for="account_password">New Password</label>
+      <div class="password-container">
+        <input 
+          type="password" 
+          id="account_password" 
+          name="account_password" 
+          required
+          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+        />
+        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password">
+          <span class="toggle-icon">&#128529;</span>
+        </button>
+      </div>
+      <div class="password-requirements">
+        <p class="requirements-title">Entering a new password will change your current password. Passwords must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special character</p>
+      </div>
+    </div>
+    
+    <input type="hidden" name="account_id" value="<%= accountData.account_id %>" />
+    
+    <div class="form-group">
+      <button type="submit" class="btn-submit">Change Password</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Password toggle functionality
+  const passwordToggle = document.getElementById('passwordToggle');
+  const passwordInput = document.getElementById('account_password');
+  
+  if (passwordToggle && passwordInput) {
+    passwordToggle.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      
+      const toggleIcon = this.querySelector('.toggle-icon');
+      if (type === 'password') {
+        toggleIcon.innerHTML = '&#128529;';
+        this.setAttribute('aria-label', 'Show password');
+      } else {
+        toggleIcon.innerHTML = '&#128528;';
+        this.setAttribute('aria-label', 'Hide password');
+      }
+    });
+  }
+</script>
+

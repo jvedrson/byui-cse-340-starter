@@ -79,8 +79,8 @@ accountController.registerAccount = async function(req, res) {
 }
 
 /* ****************************************
- *  Process login request
- * ************************************ */
+*  Process login request
+* ************************************ */
 async function accountLogin(req, res) {
   let nav = await utilities.getNav(req, res)
   const { account_email, account_password } = req.body
@@ -127,11 +127,147 @@ accountController.accountLogin = accountLogin
 * *************************************** */
 accountController.buildAccountManagement = async function(req, res, next) {
   let nav = await utilities.getNav(req, res)
+  const accountData = res.locals.accountData
   res.render("account/management", {
     title: "Account Management",
     nav,
     errors: null,
+    accountData,
   })
+}
+
+/* ****************************************
+*  Deliver account update view
+* *************************************** */
+accountController.buildAccountUpdate = async function(req, res, next) {
+  let nav = await utilities.getNav(req, res)
+  const loggedInAccountId = res.locals.accountData?.account_id
+  const requestedAccountId = req.params.account_id
+  
+  // Ensure user can only update their own account
+  if (requestedAccountId && requestedAccountId != loggedInAccountId) {
+    req.flash("notice", "You can only update your own account.")
+    return res.redirect("/account/")
+  }
+  
+  const account_id = requestedAccountId || loggedInAccountId
+  const accountData = await accountModel.getAccountById(account_id)
+  
+  if (!accountData) {
+    req.flash("notice", "Account not found.")
+    return res.redirect("/account/")
+  }
+  
+  res.render("account/update", {
+    title: "Update Account",
+    nav,
+    errors: null,
+    accountData,
+  })
+}
+
+/* ****************************************
+*  Process account update
+* *************************************** */
+accountController.updateAccount = async function(req, res, next) {
+  let nav = await utilities.getNav(req, res)
+  const { account_firstname, account_lastname, account_email, account_id } = req.body
+  const loggedInAccountId = res.locals.accountData?.account_id
+  
+  // Ensure user can only update their own account
+  if (account_id != loggedInAccountId) {
+    req.flash("notice", "You can only update your own account.")
+    return res.redirect("/account/")
+  }
+  
+  const updateResult = await accountModel.updateAccountInfo(
+    account_firstname,
+    account_lastname,
+    account_email,
+    account_id
+  )
+  
+  if (updateResult.rows) {
+    const accountData = await accountModel.getAccountById(account_id)
+    req.flash("notice", "Account information updated successfully.")
+    res.render("account/management", {
+      title: "Account Management",
+      nav,
+      errors: null,
+      accountData,
+    })
+  } else {
+    req.flash("notice", "Sorry, the account update failed.")
+    const accountData = await accountModel.getAccountById(account_id)
+    res.render("account/update", {
+      title: "Update Account",
+      nav,
+      errors: null,
+      accountData,
+    })
+  }
+}
+
+/* ****************************************
+*  Process password update
+* *************************************** */
+accountController.updatePassword = async function(req, res, next) {
+  let nav = await utilities.getNav(req, res)
+  const { account_password, account_id } = req.body
+  const loggedInAccountId = res.locals.accountData?.account_id
+  
+  // Ensure user can only update their own account
+  if (account_id != loggedInAccountId) {
+    req.flash("notice", "You can only update your own account.")
+    return res.redirect("/account/")
+  }
+  
+  // Hash the password before storing
+  let hashedPassword
+  try {
+    hashedPassword = await bcrypt.hashSync(account_password, 10)
+  } catch (error) {
+    req.flash("notice", 'Sorry, there was an error processing the password update.')
+    const accountData = await accountModel.getAccountById(account_id)
+    res.render("account/update", {
+      title: "Update Account",
+      nav,
+      errors: null,
+      accountData,
+    })
+    return
+  }
+  
+  const updateResult = await accountModel.updateAccountPassword(hashedPassword, account_id)
+  
+  if (updateResult.rows) {
+    const accountData = await accountModel.getAccountById(account_id)
+    req.flash("notice", "Password updated successfully.")
+    res.render("account/management", {
+      title: "Account Management",
+      nav,
+      errors: null,
+      accountData,
+    })
+  } else {
+    req.flash("notice", "Sorry, the password update failed.")
+    const accountData = await accountModel.getAccountById(account_id)
+    res.render("account/update", {
+      title: "Update Account",
+      nav,
+      errors: null,
+      accountData,
+    })
+  }
+}
+
+/* ****************************************
+*  Process logout
+* *************************************** */
+accountController.accountLogout = async function(req, res, next) {
+  res.clearCookie("jwt")
+  req.flash("notice", "You have been logged out.")
+  res.redirect("/")
 }
 
 module.exports = accountController

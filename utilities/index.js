@@ -4,8 +4,8 @@ require("dotenv").config()
 const Util = {}
 
 /* ************************
- * Constructs the nav HTML unordered list
- ************************** */
+* Constructs the nav HTML unordered list
+************************** */
 Util.getNav = async function (req, res, next) {
   try {
     let data = await invModel.getClassifications()
@@ -121,45 +121,63 @@ Util.buildClassificationList = async function (classification_id = null, selectI
 }
 
 /* ****************************************
- * Middleware For Handling Errors
- * Wrap other function in this for
- * General Error Handling
- **************************************** */
+* Middleware For Handling Errors
+* Wrap other function in this for
+* General Error Handling
+**************************************** */
 Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
 
 /* ****************************************
 * Middleware to check token validity
 **************************************** */
 Util.checkJWTToken = (req, res, next) => {
- if (req.cookies.jwt) {
+if (req.cookies.jwt) {
   jwt.verify(
-   req.cookies.jwt,
-   process.env.ACCESS_TOKEN_SECRET,
-   function (err, accountData) {
+  req.cookies.jwt,
+  process.env.ACCESS_TOKEN_SECRET,
+  function (err, accountData) {
     if (err) {
-     req.flash("notice", "Please log in")
-     res.clearCookie("jwt")
-     return res.redirect("/account/login")
+    req.flash("notice", "Please log in")
+    res.clearCookie("jwt")
+    return res.redirect("/account/login")
     }
     res.locals.accountData = accountData
     res.locals.loggedin = 1
     next()
-   })
- } else {
+  })
+} else {
   next()
- }
+}
 }
 
 /* ****************************************
- * Check Login
- * ************************************ */
+* Check Login
+* ************************************ */
 Util.checkLogin = (req, res, next) => {
- if (res.locals.loggedin) {
+if (res.locals.loggedin) {
   next()
- } else {
+} else {
   req.flash("notice", "Please log in.")
   return res.redirect("/account/login")
- }
+}
+}
+
+/* ****************************************
+* Check Account Type - Employee or Admin
+* ************************************ */
+Util.checkAccountType = (req, res, next) => {
+if (res.locals.loggedin && res.locals.accountData) {
+  const accountType = res.locals.accountData.account_type
+  if (accountType === "Employee" || accountType === "Admin") {
+  next()
+  } else {
+  req.flash("notice", "You must be an Employee or Admin to access this area.")
+  return res.redirect("/account/login")
+  }
+} else {
+  req.flash("notice", "Please log in.")
+  return res.redirect("/account/login")
+}
 }
 
 module.exports = Util
