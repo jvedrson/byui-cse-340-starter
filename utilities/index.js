@@ -120,6 +120,89 @@ Util.buildClassificationList = async function (classification_id = null, selectI
   }
 }
 
+/* **************************************
+* Build the reviews section HTML
+* ************************************ */
+Util.buildReviewsHTML = async function(reviews, ratingData, account_id, inv_id) {
+  let html = '<div class="reviews-section">'
+  html += '<h2>Customer Reviews</h2>'
+  
+  if (ratingData && ratingData.reviewCount > 0) {
+    html += '<div class="rating-summary">'
+    html += '<div class="average-rating">'
+    html += '<span class="rating-value">' + ratingData.averageRating + '</span>'
+    html += '<span class="rating-stars">'
+    const avgRating = Math.round(parseFloat(ratingData.averageRating))
+    for (let i = 1; i <= 5; i++) {
+      if (i <= avgRating) {
+        html += '<span class="star filled">&#10026;</span>'
+      } else {
+        html += '<span class="star">&#10026;</span>'
+      }
+    }
+    html += '</span>'
+    html += '<span class="rating-count">(' + ratingData.reviewCount + ' ' + (ratingData.reviewCount === 1 ? 'review' : 'reviews') + ')</span>'
+    html += '</div>'
+    html += '</div>'
+  } else {
+    html += '<p class="no-reviews">No reviews yet. Be the first to review this vehicle!</p>'
+  }
+  
+  if (account_id) {
+    html += '<div class="review-actions">'
+    html += '<a href="/reviews/add/' + inv_id + '" class="btn-add-review">Leave a Review</a>'
+    html += '</div>'
+  } else {
+    html += '<div class="review-actions">'
+    html += '<p class="login-prompt">Please <a href="/account/login">log in</a> to leave a review.</p>'
+    html += '</div>'
+  }
+  
+  if (reviews && reviews.length > 0) {
+    html += '<div class="reviews-list">'
+    reviews.forEach(review => {
+      html += '<div class="review-item">'
+      html += '<div class="review-header">'
+      html += '<div class="review-author">'
+      html += '<strong>' + review.account_firstname + ' ' + review.account_lastname + '</strong>'
+      html += '</div>'
+      html += '<div class="review-rating">'
+      for (let i = 1; i <= 5; i++) {
+        if (i <= review.review_rating) {
+          html += '<span class="star filled">&#10026;</span>'
+        } else {
+          html += '<span class="star">&#10026;</span>'
+        }
+      }
+      html += '</div>'
+      html += '<div class="review-date">'
+      const reviewDate = new Date(review.review_date)
+      html += reviewDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      html += '</div>'
+      html += '</div>'
+      html += '<div class="review-text">'
+      html += '<p>' + review.review_text + '</p>'
+      html += '</div>'
+      
+      // Edit/Delete buttons (only for review owner)
+      if (account_id && account_id === review.account_id) {
+        html += '<div class="review-actions-item">'
+        html += '<a href="/reviews/add/' + inv_id + '" class="btn-edit-review">Edit</a>'
+        html += '<form action="/reviews/delete" method="post" class="delete-review-form" onsubmit="return confirm(\'Are you sure you want to delete this review?\');">'
+        html += '<input type="hidden" name="review_id" value="' + review.review_id + '" />'
+        html += '<button type="submit" class="btn-delete-review">Delete</button>'
+        html += '</form>'
+        html += '</div>'
+      }
+      html += '</div>'
+    })
+    html += '</div>'
+  }
+  
+  html += '</div>'
+  return html
+}
+
 /* ****************************************
 * Middleware For Handling Errors
 * Wrap other function in this for

@@ -1,4 +1,5 @@
 const invModel = require("../models/inventory-model")
+const reviewModel = require("../models/review-model")
 const utilities = require("../utilities/")
 
 const invCont = {}
@@ -28,10 +29,27 @@ invCont.buildByInvId = async function (req, res, next) {
   const detailHTML = await utilities.buildDetailHTML(data)
   let nav = await utilities.getNav()
   const title = data ? data.inv_make + " " + data.inv_model : "Vehicle Not Found"
+  
+  // Get reviews and rating data
+  let reviews = []
+  let ratingData = { averageRating: "0.0", reviewCount: 0 }
+  const account_id = res.locals.accountData?.account_id
+  
+  try {
+    reviews = await reviewModel.getReviewsByInvId(inv_id)
+    ratingData = await reviewModel.getAverageRatingByInvId(inv_id)
+  } catch (error) {
+    console.error("Error fetching reviews:", error)
+  }
+  
+  // Build reviews HTML
+  const reviewsHTML = await utilities.buildReviewsHTML(reviews, ratingData, account_id, inv_id)
+  
   res.render("./inventory/detail", {
     title: title,
     nav,
     detailHTML,
+    reviewsHTML,
   })
 }
 

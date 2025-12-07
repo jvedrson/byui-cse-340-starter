@@ -1,0 +1,99 @@
+<%# Content Heading %>
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%# Message Block %>
+<%- messages() %>
+
+<%# Error Display %>
+<% if (errors) { %>
+  <ul class="notice">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<%# Review Form %>
+<div class="form-container">
+  <% if (inv_make && inv_model) { %>
+    <p class="review-vehicle-info">Review for: <strong><%= inv_make %> <%= inv_model %></strong></p>
+  <% } %>
+  
+  <form action="<%= isEdit ? '/reviews/update' : '/reviews/add' %>" method="post" class="review-form" id="reviewForm">
+    <% if (isEdit && review) { %>
+      <input type="hidden" name="review_id" value="<%= review.review_id %>" />
+    <% } %>
+    
+    <input type="hidden" name="inv_id" value="<%= inv_id %>" />
+    
+    <div class="form-group">
+      <label for="review_rating">Rating</label>
+      <select 
+        id="review_rating" 
+        name="review_rating"
+        required
+      >
+        <option value="">Select a rating</option>
+        <% 
+          const currentRating = locals.review_rating || (review && review.review_rating) || null;
+        %>
+        <option value="5" <%= currentRating == 5 ? 'selected' : '' %>>5 - Excellent</option>
+        <option value="4" <%= currentRating == 4 ? 'selected' : '' %>>4 - Very Good</option>
+        <option value="3" <%= currentRating == 3 ? 'selected' : '' %>>3 - Good</option>
+        <option value="2" <%= currentRating == 2 ? 'selected' : '' %>>2 - Fair</option>
+        <option value="1" <%= currentRating == 1 ? 'selected' : '' %>>1 - Poor</option>
+      </select>
+      <p class="form-help">Rate this vehicle from 1 (Poor) to 5 (Excellent)</p>
+    </div>
+    
+    <div class="form-group">
+      <label for="review_text">Review</label>
+      <textarea 
+        id="review_text" 
+        name="review_text"
+        rows="6"
+        required
+        minlength="10"
+        maxlength="1000"
+        placeholder="Write your review here (minimum 10 characters, maximum 1000 characters)..."
+      ><%= locals.review_text || (review && review.review_text) || '' %></textarea>
+      <p class="form-help">Minimum 10 characters, maximum 1000 characters</p>
+      <p class="char-count"><span id="charCount">0</span> / 1000 characters</p>
+    </div>
+    
+    <div class="form-group">
+      <button type="submit" class="btn-submit"><%= isEdit ? 'Update Review' : 'Submit Review' %></button>
+      <a href="/inv/detail/<%= inv_id %>" class="btn-cancel-review margin-top-10">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Character counter for review text
+  const reviewText = document.getElementById('review_text');
+  const charCount = document.getElementById('charCount');
+  
+  if (reviewText && charCount) {
+    // Update count on load
+    charCount.textContent = reviewText.value.length;
+    
+    // Update count on input
+    reviewText.addEventListener('input', function() {
+      charCount.textContent = this.value.length;
+      
+      // Change color if approaching limit
+      if (this.value.length > 900) {
+        charCount.style.color = '#d32f2f';
+      } else if (this.value.length > 800) {
+        charCount.style.color = '#f57c00';
+      } else {
+        charCount.style.color = '#666';
+      }
+    });
+  }
+</script>
+
